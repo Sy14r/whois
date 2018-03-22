@@ -1,8 +1,13 @@
 package whois
 
+import (
+	"net"
+)
+
 const (
 	// IANA is the default whois server for TLDs.
 	IANA = "whois.iana.org"
+	ARIN = "whois.arin.net"
 )
 
 // Request represents a whois request.
@@ -19,6 +24,9 @@ func NewRequest(query string) (*Request, error) {
 	req := &Request{Query: query}
 	if err := req.Prepare(); err != nil {
 		return nil, err
+	}
+	if res := net.ParseIP(query); res != nil {
+		req.Body = append([]byte("z + "), req.Body...)
 	}
 	return req, nil
 }

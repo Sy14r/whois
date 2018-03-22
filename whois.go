@@ -3,6 +3,7 @@ package whois
 import (
 	"fmt"
 	"net/url"
+	"net"
 	"strings"
 
 	"github.com/zonedb/zonedb"
@@ -23,6 +24,9 @@ func Server(query string) (string, string, error) {
 	// Queries on TLDs always against IANA
 	if strings.Index(query, ".") < 0 {
 		return IANA, "", nil
+	}
+	if check := net.ParseIP(query); check != nil {
+		return ARIN, "", nil
 	}
 	z := zonedb.PublicZone(query)
 	if z == nil {
